@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Card Fraud Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .container {
+            width: 60%;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Credit Card Fraud Detection</h1>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" id="fileInput" accept=".csv, .pdf, .xls, .xlsx">
+            <button type="submit">Upload</button>
+        </form>
+        <div id="result" class="hidden"></div>
+    </div>
+    <script>
+        document.getElementById("uploadForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let fileInput = document.getElementById("fileInput").files[0];
+            if (!fileInput) {
+                alert("Please select a file first.");
+                return;
+            }
+            let formData = new FormData();
+            formData.append("file", fileInput);
+            let resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = "⏳ Processing file... Please wait.";
+            resultDiv.classList.remove("hidden", "warning", "success");
+            fetch("/upload", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    resultDiv.innerHTML = `❌ Error: ${data.error}`;
+                    resultDiv.classList.add("warning");
+                } else {
+                    let isFraud = data.isFraud;
+                    if (isFraud) {
+                        resultDiv.innerHTML = `⚠️ Fraudulent Transaction Detected! (Probability: ${data.probability}%)`;
+                        resultDiv.classList.add("warning");
+                    } else {
+                        resultDiv.innerHTML = `✅ Transaction is Safe (Fraud Probability: ${data.probability}%)`;
+                        resultDiv.classList.add("success");
+                    }
+                }
+            })
+            .catch(error => {
+                console.error("Fetch Error:", error);
+                resultDiv.innerHTML = `❌ Error in processing the file. Check console for details.`;
+                resultDiv.classList.add("warning");
+            });
+        });
+    </script>
+</body>
+</html>
