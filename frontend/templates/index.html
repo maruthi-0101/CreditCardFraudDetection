@@ -6,54 +6,106 @@
     <title>Credit Card Fraud Detection</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
+            overflow: hidden;
         }
         .container {
-            width: 60%;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            font-size: 28px;
-            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             text-align: center;
-            color: #333;
+            animation: fadeIn 1s ease-in-out;
+        }
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .file-upload {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .file-upload:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        button {
+            background: #28a745;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        button:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            animation: slideIn 0.5s ease-in-out;
+        }
+        .result h3, .result p {
+            color: #fff;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Credit Card Fraud Detection</h1>
+        <h2>Credit Card Fraud Detection</h2>
         <form id="uploadForm" enctype="multipart/form-data">
-            <input type="file" id="fileInput" accept=".csv, .pdf, .xls, .xlsx">
-            <button type="submit">Upload</button>
+            <label for="file-upload" class="file-upload">Upload File</label>
+            <input type="file" id="file-upload" accept=".csv,.json,.xlsx,.xls,.pdf" required>
+            <button type="submit">Analyze</button>
         </form>
-        <div id="result" class="hidden"></div>
+        <div id="result" class="result" style="display:none;"></div>
     </div>
     <script>
         document.getElementById("uploadForm").addEventListener("submit", function(event) {
             event.preventDefault();
-            let fileInput = document.getElementById("fileInput").files[0];
+            let fileInput = document.getElementById("file-upload").files[0];
             if (!fileInput) {
-                alert("Please select a file first.");
+                alert("Please select a file.");
                 return;
             }
             let formData = new FormData();
             formData.append("file", fileInput);
             let resultDiv = document.getElementById("result");
+            resultDiv.style.display = "block";
             resultDiv.innerHTML = "⏳ Processing file... Please wait.";
-            resultDiv.classList.remove("hidden", "warning", "success");
             fetch("/upload", {
                 method: "POST",
                 body: formData
@@ -62,22 +114,13 @@
             .then(data => {
                 if (data.error) {
                     resultDiv.innerHTML = `❌ Error: ${data.error}`;
-                    resultDiv.classList.add("warning");
                 } else {
-                    let isFraud = data.isFraud;
-                    if (isFraud) {
-                        resultDiv.innerHTML = `⚠️ Fraudulent Transaction Detected! (Probability: ${data.probability}%)`;
-                        resultDiv.classList.add("warning");
-                    } else {
-                        resultDiv.innerHTML = `✅ Transaction is Safe (Fraud Probability: ${data.probability}%)`;
-                        resultDiv.classList.add("success");
-                    }
+                    resultDiv.innerHTML = `${data.message} (Fraud Probability: ${data.fraud_probability}%)`;
                 }
             })
             .catch(error => {
                 console.error("Fetch Error:", error);
-                resultDiv.innerHTML = `❌ Error in processing the file. Check console for details.`;
-                resultDiv.classList.add("warning");
+                resultDiv.innerHTML = "❌ Error processing the file.";
             });
         });
     </script>

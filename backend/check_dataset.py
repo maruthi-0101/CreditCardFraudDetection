@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load dataset
-df = pd.read_csv("creditcard.csv")
+df = pd.read_csv("your-path-name")
 
 # Check for missing values
 print("\n🔍 Checking for Missing Values:")

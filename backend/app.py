@@ -4,7 +4,7 @@ import tensorflow as tf
 import pandas as pd
 import json
 import os
-import logging`
+import logging
 import traceback
 import PyPDF2
 import re

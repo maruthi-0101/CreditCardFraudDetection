@@ -7,7 +7,7 @@ import tensorflow as tf
 import joblib
 
 # ✅ Step 1: Load Dataset
-df = pd.read_csv("creditcard.csv")
+df = pd.read_csv("transactions.csv")
 
 # ✅ Step 2: Remove "Time" Column
 df = df.drop(columns=["Time"])
@@ -48,6 +48,7 @@ model = tf.keras.Sequential([
     tf.keras.layers.Dense(1, activation='sigmoid')  # Output layer for fraud probability
 ])
 
+
 # ✅ Step 8: Use Class Weights to Force Learning
 class_weights = {0: 1, 1: 10}  # Fraud cases weighted 10x more
 
@@ -71,5 +72,5 @@ print(f"\n🔍 Final Training Accuracy: {train_acc:.4f}, Loss: {train_loss:.4f}"
 print(f"🔍 Final Test Accuracy: {test_acc:.4f}, Loss: {test_loss:.4f}")
 
 # ✅ Save the Model
-model.save("fraud_model_14.keras")
+model.save("fraud_model_15.keras")
 print("✅ Model trained and saved as fraud_model_fixed.keras")
