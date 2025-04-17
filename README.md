@@ -116,4 +116,4 @@ Replace:
 - Add your actual email
 - If you're hosting it live, I can help embed the live demo URL too
 
-Let me know when you're ready for the next one (like Automobile Part Recognition or Hair Try-On)!
+Let me know when you're ready for the next one (like Automobile Part Recognition or Hair Try-On)!# credit-card-faurd-detection
