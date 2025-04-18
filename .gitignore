@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.h5
+
+# Environments
+venv/
+creditcardvenv/
+
+# VSCode (optional)
+.vscode/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Build/compiled output (if any)
+*.egg-info/
+*.log
+
+# Frontend specific (optional - based on stack)
+frontend/node_modules/
+frontend/.DS_Store
